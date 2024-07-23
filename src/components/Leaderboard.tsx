@@ -32,10 +32,8 @@ const Leaderboard: React.FC = () => {
   const recentEntry = useSelector((state: RootState) => state.scores.recentEntry);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-
   const recentEntryIndex = scores.findIndex(score => score.username === recentEntry?.username && score.time === recentEntry?.time);
   const recentEntryPrize = getPrize(recentEntryIndex + 1);
-
 
   const handleAddButtonClick = () => {
     setIsModalOpen(true);
@@ -54,12 +52,12 @@ const Leaderboard: React.FC = () => {
         {
           scores.length === 0 ? (
             <div className='no-entry-container'>
-                <p className='no-entry'>No entry till now</p>
-                <button className='add-btn' onClick={handleAddButtonClick}>
-                  <IoAddCircle fontSize={25} />
-                  Add
-                </button>
-              </div> 
+              <p className='no-entry'>No entry till now</p>
+              <button className='add-btn' onClick={handleAddButtonClick}>
+                <IoAddCircle fontSize={25} />
+                Add
+              </button>
+            </div>
 
           ) : (<table>
             <thead>
@@ -84,8 +82,11 @@ const Leaderboard: React.FC = () => {
             <tbody>
 
               {scores.slice(0, 10).map((score: Score, index: number) => (
-                <tr key={index} className={`${index < 3 ? `top-${index + 1} ` : 'rest-row'} `}>
-                  <td  ><span className='serialNo'>{index + 1}</span></td>
+                <tr
+                  key={index}
+                  className={`${index < 3 ? `top-${index + 1} ` : 'rest-row'} ${recentEntry && score.username === recentEntry.username && score.time === recentEntry.time ? 'recent-entry-animate' : ''} ${index % 2 === 0 ? 'slide-in-left' : 'slide-in-right'}`}
+                >
+                  <td><span className='serialNo'>{index + 1}</span></td>
                   <td>
                     {index < 3 && <FaCrown />} {score.username}
                   </td>
@@ -95,21 +96,20 @@ const Leaderboard: React.FC = () => {
               ))
               }
 
-
             </tbody>
           </table>)
         }
 
-
-       {
-        scores.length ? (<div className='popup'>
-          <button className='add-btn middle-add-btn' onClick={handleAddButtonClick}>
-            <IoAddCircle fontSize={25} />
-            Add
-          </button>
-        </div> ) : ""
-       }
-        
+        {
+          scores.length ? (
+            <div className='popup'>
+              <button className='add-btn middle-add-btn' onClick={handleAddButtonClick}>
+                <IoAddCircle fontSize={25} />
+                Add
+              </button>
+            </div>
+          ) : ""
+        }
 
         {recentEntry && (
           <div className="recent-entry">
@@ -123,12 +123,9 @@ const Leaderboard: React.FC = () => {
           </div>
         )}
 
-
       </div>
       {isModalOpen && <PopupForm onClose={handleModalClose} />}
-
     </div>
-
   );
 };
 
